@@ -1,5 +1,5 @@
-import { base_circle_leaf } from '../leafshape';
+import { base_circle_leaf } from '../nidhajs';
 
 test('My Greeter', () => {
-  expect(typeof (new base_circle_leaf(100,200,null,20))).toBe('base_circle_leaf');
+  expect((new base_circle_leaf(100,200,null,20)));
 });

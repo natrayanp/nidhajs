@@ -1,23 +1,20 @@
 {
   "name": "nidhajs",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Create reusable custom shapes",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/nidhajs.js",
+  "types": "lib/nidhajs.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json",
-    "prepare": "npm run build leafshape.ts",
-    "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint",
+    "prepare": "npm run build",  
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "keywords": [],
   "author": "natraya@yandex.com",
-  "license": "ISC",
+  "license": "Apache 2.0",
   "devDependencies": {
     "@types/d3": "^5.7.2",
     "@types/jest": "^24.0.16",

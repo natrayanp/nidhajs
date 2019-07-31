@@ -62,10 +62,6 @@ export abstract class LeafShape {
     }
 
     public set_x(x:number) {
-      console.log(x);
-      console.log((typeof(this.parentshape)));
-      console.log(typeof(<LeafShape>{}));
-      console.log(JSON.stringify(this.parentshape) === '{}');
 
       this.checkforempty(this.parentshape) ? this.x = x: this.x = this.parentshape.get_x() + this.x_adjust_factor;
     }
@@ -75,7 +71,7 @@ export abstract class LeafShape {
     }
 
     private checkforempty(obj: any): boolean {
-      if ((obj.entries().length === 0 && obj.constructor === Object)) {
+      if ((Object.keys(obj).length === 0 && obj.constructor === Object)) {
         return true;
       }  
       return false;    
