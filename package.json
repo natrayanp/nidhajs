@@ -1,7 +1,7 @@
 {
   "name": "nidhajs",
-  "version": "1.0.3",
-  "description": "Create reusable custom shapes",
+  "version": "1.0.5",
+  "description": "Create reusable SVG shapes without writing D3 Code",
   "main": "lib/nidhajs.js",
   "types": "lib/nidhajs.d.ts",
   "scripts": {
