@@ -1,6 +1,6 @@
 {
   "name": "nidhajs",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "Create reusable SVG shapes without writing D3 Code",
   "main": "lib/nidhajs.js",
   "types": "lib/nidhajs.d.ts",
@@ -8,7 +8,7 @@
     "test": "jest --config jestconfig.json",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "prepare": "npm run build",  
+    "prepare": "npm run build",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
@@ -25,5 +25,6 @@
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.3"
-  }
+  },
+  "dependencies": {}
 }
