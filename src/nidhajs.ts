@@ -29,7 +29,7 @@ interface event_name {
   event_code: string;
 }
 
-interface event_callback_response {
+export interface event_callback_response {
   even: string;
   event_code: string;
   data: any;        
@@ -132,6 +132,25 @@ export class Connectors {
     //console.log("#####---");
     this.start_obj.myroot[0].path_obj.push(this);
     this.end_obj.myroot[0].path_obj.push(this);
+
+    //Change related to save chart data
+    //Add new parent to a LEAF.  raw data in chart object also updated after this: START
+    //console.log("----- add new parent START -----");
+    let new_parent_id = this.start_obj.myroot[0].data.data.id;
+    let parent_exists: boolean = false;
+    //console.log(new_parent_id);
+    //console.log(parent_exists);
+    this.end_obj.myroot[0].data.data.parentIds.forEach((pid: string) => { 
+                                                          if(pid===new_parent_id){
+                                                              parent_exists = true;
+                                                            }
+                                                        });
+    //console.log(parent_exists);
+    if(!parent_exists){
+      this.end_obj.myroot[0].data.data.parentIds.push(new_parent_id);
+    }
+    //Add new parent to a LEAF.  raw data in chart object also updated after this: END
+
    } else {
      this.con_group.remove();
    }
@@ -1063,6 +1082,12 @@ export abstract class LeafShape {
         this.myroot[0].chart_obj.push_leaf("draw_area",this);
         //this.myroot[0].chart_obj.
         this.myroot[0].chart_obj.moving_leaf= <LeafShape>{};
+
+        //Change related to save chart data
+        //Update the latest position of the Leaf. Raw data in chart object updated : START
+        this.myroot[0].data.data.x = this.myroot[0].get_x();
+        this.myroot[0].data.data.y = this.myroot[0].get_y();
+        //Update the latest position of the Leaf. Raw data in chart object updated : END
 
     }
 
