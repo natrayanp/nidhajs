@@ -233,6 +233,7 @@ console.log("-------------");
       console.log(i);
       console.log(n[i]);
       console.log(d3.select(n[0]).node());
+      console.log( d3.event.pageX, d3.event.pageY );
       console.log("$$$$$$$");
       d3.select(n[0]).select(".connector-path").attr("stroke-width", 85);
 });
@@ -371,6 +372,7 @@ export class TextLeaf {
           this.row_textbox = [];
           this.text_align = "middle";
           this.rootshape = rootsh;
+          this.rootshape.text_array = rootsh.data.data.leaf_d_txt;
           this.col_width = [];
           this.row_height = [];
           this.max_col_width = []; 
@@ -378,6 +380,8 @@ export class TextLeaf {
     }
 
     init_text() {
+        this.max_col_width = []; 
+        this.max_row_height = []; 
         let empt_arr = [];
         let in_tmp_val = {
               "r_ind" : 0,
@@ -388,7 +392,11 @@ export class TextLeaf {
               "txt_h" : 0,
               "txt_align" : this.text_align,
               "textval" : "",
-              "myTleaf" : null
+              "myTleaf" : null,
+              "fontfamily": "sans-serif",
+              "fontsize": "15px",
+              "fill":"black",
+              "fontweight": 545
           };
 
       //Check if i have only one text box
@@ -400,8 +408,9 @@ export class TextLeaf {
                   : only_one_txt = false)
             : no_text = true);
 
-        //console.log("only_one_txt - " + only_one_txt);
-        //console.log("no_text -" + no_text);
+        console.log("only_one_txt - " + only_one_txt);
+        console.log("no_text -" + no_text);
+        console.log(this.rootshape.text_array);
         
       this.col_width = [];
       this.row_height = [];
@@ -421,10 +430,14 @@ export class TextLeaf {
                       in_tmp_val_cpy.c_ind = coi;                  
                       in_tmp_val_cpy.txt_align = only_one_txt ? "middle": "start";                  
                       in_tmp_val_cpy.textval = col_item.textval;
+                      console.log("in_tmp_val_cpy.textval = = " + in_tmp_val_cpy.textval);
                       let { tmp_txt_w, tmp_txt_h } = this.get_text_wh(in_tmp_val_cpy.textval);
+                      console.log("tmp_txt_w - ",tmp_txt_w);
+                      console.log("tmp_txt_h - ", tmp_txt_h);
                       in_tmp_val_cpy.txt_w = tmp_txt_w;
                       in_tmp_val_cpy.txt_h = tmp_txt_h;
-
+                      console.log("in_tmp_val_cpy.txt_w - ",in_tmp_val_cpy.txt_w);
+                      console.log("in_tmp_val_cpy.txt_h - ", in_tmp_val_cpy.txt_h);
 
                       this.row_textbox[roi].push(in_tmp_val_cpy);
 
@@ -440,18 +453,27 @@ export class TextLeaf {
             });
 
 
+          console.log("row_height");
+          console.log(this.row_height);
+          console.log( "col_width");
+           console.log( this.col_width);
+
           //Calculate max width & height
             this.col_width.forEach( (roit) => {
-                let max_w_a = Math.min(Math.max(...roit),20);
+                //let max_w_a = Math.min(Math.max(...roit),20);
+                let max_w_a = Math.max(...roit);
                 this.max_col_width.push(max_w_a);
             });
 
             this.row_height.forEach( (roit) => {
-                let max_h_a = Math.min(Math.max(...roit),28);
+                let max_h_a = Math.min(Math.max(...roit),15);
                 this.max_row_height.push(max_h_a);
             });
 
-
+          console.log("max_col_width - ");
+            console.log( this.max_col_width);
+          console.log("max_row_height - " );
+           console.log( this.max_row_height);
 
 
           //reCalculate each text item to fit with max width & height            
@@ -475,10 +497,10 @@ export class TextLeaf {
             t_w = t_w + this.margin_left + (((this.max_col_width.length)-1)*this.column_gap) + this.margin_right;
             t_h = t_h + this.margin_top + (((this.max_row_height.length)-1)*this.row_gap) + this.margin_bottom;
 
-          //console.log("bas_t_w - " + bas_t_w);
-          //console.log("bas_t_h - " + bas_t_h);
-          //console.log("t_w - " + t_w);
-          //console.log("t_h - " + t_h);
+          console.log("bas_t_w - " + bas_t_w);
+          console.log("bas_t_h - " + bas_t_h);
+          console.log("t_w - " + t_w);
+          console.log("t_h - " + t_h);
 
             t_w = Math.max(t_w,bas_t_w);
             t_h = Math.max(t_h,bas_t_h);
@@ -499,10 +521,15 @@ export class TextLeaf {
                       //First column
                       if( coi === 0) {
                       //Have only one row and one column
-                        if(only_one_txt) {                          
+                        console.log("inside one row and one column");
+                        if(only_one_txt) {     
+                          console.log(<LeafShape>this.rootshape);
+                          console.log(col_item);
                           col_item.x_adj = (<any>(<LeafShape>this.rootshape).baseshape).width/2;
                           col_item.y_adj = (<any>(<LeafShape>this.rootshape).baseshape).height/2;
                           col_item.txt_align = "middle";
+                          console.log(col_item.x_adj);
+                          console.log(col_item.y_adj);
                         } else {
                           col_item.x_adj = this.margin_left;
                           col_item.y_adj = this.margin_top;
@@ -540,6 +567,7 @@ export class TextLeaf {
         }
     }
 
+  
     text_modified() {
       let gr_id = (<LeafShape>this.rootshape).groupid;
       let text_tmp = d3.select(gr_id).selectAll("text").remove();
@@ -547,7 +575,12 @@ export class TextLeaf {
       //consoele.log("dkdkdkdk");
       
       this.init_text();
-
+      /*
+      console.log(this);
+      (<LeafShape>this.rootshape).myroot[0].mvg_obj =(<LeafShape>this.rootshape).myroot[0];
+      let uu =  (<LeafShape>this.rootshape).myroot[0].baseshape.movingstart();
+      let xx = (<LeafShape>this.rootshape).myroot[0].baseshape.moving(this.rootshape.myroot[0].x,this.rootshape.myroot[0].y);
+      */
       
     }
 
@@ -581,6 +614,10 @@ export class TextLeaf {
                     .attr("height",tb.txt_h)
                     .attr("x",r_x+tb.x_adj)
                     .attr("y",r_y+tb.y_adj)
+                    .attr("font-family", tb.fontfamily)
+                    .attr("font-size", tb.fontsize)
+                    .attr("fill", tb.fill)
+                    .attr("font-weight", tb.fontweight)
                     .text(tb.textval)
                     .style("text-anchor",tb.txt_align)
                     .style("alignment-baseline","middle");
@@ -1027,6 +1064,7 @@ export abstract class LeafShape {
           if (this.drag_func_call[0] !== null ) {
               //console.log("hahastartmoving")
               //console.log(this);
+              console.log("kskskd");
               if (this.drag_func_call[0] === "Connectors") {
                   let new_con_instance = <Connectors>this.myroot[0].chart_obj.getInstance(this.drag_func_call[0],this.con_start_obj);
                   this.mvg_obj = new_con_instance.end_obj;
@@ -1044,11 +1082,14 @@ export abstract class LeafShape {
           this.mvg_obj.iammoving = true;
           
         } else {
+          console.log("Do nothing");
           //Don't do anything
         }
     }
 
     movingend(x:number,y:number) {
+        console.log("Moving end");
+        console.log(!(this.iammoving && this.drag_disabled));
         if(!(this.iammoving && this.drag_disabled)) {
           console.log(this.drag_func_call[3]);
             if (this.drag_func_call[0] !== null ) {
@@ -1094,10 +1135,11 @@ export abstract class LeafShape {
  public moving(x:number,y:number): void
     {
         //console.log("---ui am moving");
-      //console.log(this);
-      //console.log(this.mvg_obj);
+      console.log(this);
+      console.log(this.mvg_obj);
       let moving_obj = this.isemptyobject(this.mvg_obj)? this : this.mvg_obj;
-
+      console.log("insidinv moving");
+        console.log((!(moving_obj.iammoving && moving_obj.drag_disabled)));
         if(!(moving_obj.iammoving && moving_obj.drag_disabled)) {
 
          if(!this.isemptyobject(moving_obj.parentshape) && moving_obj.parentshape.baseshape === moving_obj && moving_obj.iammoving && this.isemptyobject(moving_obj.parentshape.parentshape)) {
@@ -1138,7 +1180,8 @@ export abstract class LeafShape {
               moving_obj.y = y;
         } 
 
-
+        this.do_move_bare(moving_obj);
+        /*
         if (this.isemptyobject(moving_obj.baseshape) && moving_obj.childshape.length===0 ) {
             
             moving_obj.moving_bare();
@@ -1151,10 +1194,12 @@ export abstract class LeafShape {
           } else {            
             moving_obj.baseshape.moving(moving_obj.get_x(),moving_obj.get_y());
         }
-
+        */
 
         // Move Connectors
           if(moving_obj.iammoving){
+            this.do_move_connectors();
+            /*
               console.log("&$&$&$&");
               console.log(this);
               console.log(this.myroot[0].path_obj.length > 0);
@@ -1165,6 +1210,7 @@ export abstract class LeafShape {
                   pob.path_maintenance();
               })
           }
+          */
           }
 
           //Call the drag callback
@@ -1185,6 +1231,9 @@ export abstract class LeafShape {
     }
 
     public abstract moving_bare():void;
+
+    // Recalculate the adj factor after any change in size of the base element
+    public abstract recalc_adj_factor():void;
     
     public get_x() {
       return this.x;
@@ -1203,9 +1252,11 @@ export abstract class LeafShape {
     }
 
     public isemptyobject(obj: any): boolean {
-
-      if ((Object.keys(obj).length === 0 && obj.constructor === Object)) {
-        return true;
+      
+      if(obj !== undefined) {
+        if ((Object.keys(obj).length === 0 && obj.constructor === Object)) {
+          return true;
+        }
       }  
       return false;    
 
@@ -1349,7 +1400,54 @@ export abstract class LeafShape {
     return this.leafs_con_cnt += 1;
   } 
 
+  text_modify() {
+    //myroot[0] is taken to ensure tex is added only to the top most element
+    //This modifes the base shape that holds the text
+    this.myroot[0].text_obj.text_modified();
+    //This modifes the adj factor based on the new size after text modification
+    this.myroot[0].do_adj_recalc();
+    console.log("after recalc modify");
+    //This moves the base shapes to the new postion based on the new adj values
+    this.myroot[0].do_move_bare(this);
+    console.log("after movebare ");
+    //This moves the connectors based on the leafs new size and child positions
+    this.do_move_connectors();
+  }
 
+  do_adj_recalc() { 
+      this.recalc_adj_factor();
+      this.childshape.forEach( le => { le.recalc_adj_factor();});    
+  }
+
+  do_move_bare(mv_ba_obj: LeafShape) {    
+    if (this.isemptyobject(mv_ba_obj.baseshape) && mv_ba_obj.childshape.length===0 ) {
+        mv_ba_obj.moving_bare();
+        if (mv_ba_obj.parentshape.baseshape === mv_ba_obj) {
+            mv_ba_obj.parentshape.childshape.forEach( le => { if(le!==mv_ba_obj) {le.moving(mv_ba_obj.get_x(),mv_ba_obj.get_y())};});
+            let sdcr;
+            ((mv_ba_obj.parentshape.text_obj.row_textbox !== undefined) && (mv_ba_obj.parentshape.text_obj.row_textbox.length>0))?mv_ba_obj.parentshape.text_obj.txt_moving(mv_ba_obj.get_x(),mv_ba_obj.get_y()): sdcr="";           
+        }
+    } else {            
+        mv_ba_obj.baseshape.moving(mv_ba_obj.get_x(),mv_ba_obj.get_y());
+    }
+  }
+
+
+
+
+  do_move_connectors() {
+      console.log("&$&$&$&");
+      console.log(this);
+      console.log(this.myroot[0].path_obj.length > 0);
+  if(this.myroot[0].path_obj.length >0) {
+    this.myroot[0].path_obj.forEach(
+      (pob: Connectors) => {                  
+          console.log(pob);
+          pob.path_maintenance();
+      })
+  }
+          
+  }
 
   
 
@@ -1385,10 +1483,20 @@ export class base_rect_leaf_w_text extends LeafShape {
                      // .attr("fill-opacity",0.5)
                       ;
                       this.mybaseleaf.raise();
+      //Add an empty text                      
+      //this.add_text(4,4,'','green');
   }
 
-  add_text(adj_t_x: number,adj_t_y: number,text_val: string,fill_clr: string) {
-        this.mytext = d3.select(this.groupid)
+  add_text(adj_t_x: number = 0,adj_t_y: number = 0,text_val: string = '',fill_clr: string = 'white') {
+      console.log(this);
+      console.log(this.get_y());
+      if ((this.isemptyobject(this.mytext))) {
+          this.mytext.attr("x",this.get_x()+5)
+                      .attr("y",this.get_y()+7)
+                      .text(text_val)
+                      .style("fill", fill_clr);
+      } else {
+          this.mytext = d3.select(this.groupid)
                     .append("text")
                     .attr("id",this.groupid+"_base_text")
                     .attr("x",this.get_x()+adj_t_x)
@@ -1397,22 +1505,33 @@ export class base_rect_leaf_w_text extends LeafShape {
                     .style("fill", fill_clr)
                     .attr("font-weight", 600)
                     .style("font", "1px")
-                    .style("text-anchor","middle")
+                    //.style("text-anchor","middle")
                     .style("alignment-baseline","middle")
                     .style("cursor", "pointer");
+      }
   }
 
   moving_bare() {
+    console.log("ii moving bare text leaf");
     this.mybaseleaf.attr("x", this.get_x())
                .attr("y", this.get_y());
-
-    if (!(this.isemptyobject(this.mytext))) {
+    
+    if ((this.isemptyobject(this.mytext))) {
       this.mytext.attr("x",this.get_x()+5)
                     .attr("y",this.get_y()+7)
   }
   }
 
+recalc_adj_factor() {
+    this.set_x(this.isemptyobject(this.parentshape)?this.get_x():0);
+    this.set_y(this.isemptyobject(this.parentshape)?this.get_y():0); 
+}
+
   redraw() {
+    console.log(this);
+    console.log("Inside redraw");
+    console.log(this.get_x());
+    console.log(this.get_y());
     this.mybaseleaf.attr("width",this.width)
                       .attr("height",this.height)
                       .attr("x",this.get_x())
@@ -1457,8 +1576,14 @@ export class base_circle_leaf extends LeafShape {
 
 
   moving_bare() {
+    console.log("ii moving bare circle leaf");
     this.mybaseleaf.attr("cx", this.get_x())
                .attr("cy", this.get_y());
+  }
+
+  recalc_adj_factor() {
+    this.set_x(this.isemptyobject(this.parentshape)?this.get_x():0);
+    this.set_y(this.isemptyobject(this.parentshape)?this.get_y():0); 
   }
 
  leaf_resize(radius: number) {    
@@ -1520,6 +1645,10 @@ export class base_rect_leaf extends LeafShape {
                       .attr("y",this.get_y());
   }
 
+recalc_adj_factor() {
+    this.set_x(this.isemptyobject(this.parentshape)?this.get_x():0);
+    this.set_y(this.isemptyobject(this.parentshape)?this.get_y():0); 
+}
   /*
 size_calc() {
     this.textval ? this.width = Math.max(this.width,this.textleaf.node().getBBox().width): this.width;
@@ -1530,6 +1659,18 @@ size_calc() {
  public size_calc(): void {
   throw new Error("Method not implemented.");
 }
+
+}
+
+
+export function isemptyobject(obj: any): boolean {
+      
+  if(obj !== undefined) {
+    if ((Object.keys(obj).length === 0 && obj.constructor === Object)) {
+      return true;
+    }
+  }  
+  return false;    
 
 }
 
@@ -1576,3 +1717,4 @@ export class base_circle_leaf extends LeafShape {
 
 }
 */
+

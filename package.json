@@ -1,6 +1,6 @@
 {
   "name": "nidhajs",
-  "version": "1.0.24",
+  "version": "1.0.31",
   "description": "Create reusable SVG shapes without writing D3 Code",
   "main": "lib/nidhajs.js",
   "types": "lib/nidhajs.d.ts",
@@ -17,15 +17,14 @@
   "license": "Apache 2.0",
   "devDependencies": {
     "@types/d3": "^5.7.2",
-    "@types/jest": "^24.0.16",
-    "d3": "^5.9.7",
-    "jest": "^24.8.0",
-    "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.18.0",
+    "@types/jest": "^24.9.1",
+    "d3": "^5.16.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^24.3.0",
+    "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.8.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
