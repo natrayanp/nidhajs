@@ -1488,9 +1488,12 @@ export class base_rect_leaf_w_text extends LeafShape {
   }
 
   add_text(adj_t_x: number = 0,adj_t_y: number = 0,text_val: string = '',fill_clr: string = 'white') {
+      console.log("Text mv");
       console.log(this);
       console.log(this.get_y());
-      if ((this.isemptyobject(this.mytext))) {
+      console.log("Text mv");
+      //if ((this.isemptyobject(this.mytext))) {
+        if(this.mytext != undefined) {
           this.mytext.attr("x",this.get_x()+5)
                       .attr("y",this.get_y()+7)
                       .text(text_val)
@@ -1513,13 +1516,17 @@ export class base_rect_leaf_w_text extends LeafShape {
 
   moving_bare() {
     console.log("ii moving bare text leaf");
+    console.log(this);
+    console.log(this.mytext);
+    console.log(typeof(this.mytext));
+    console.log(this.mytext != undefined);
     this.mybaseleaf.attr("x", this.get_x())
                .attr("y", this.get_y());
     
-    if ((this.isemptyobject(this.mytext))) {
+    if (this.mytext != undefined) {
       this.mytext.attr("x",this.get_x()+5)
                     .attr("y",this.get_y()+7)
-  }
+    }
   }
 
 recalc_adj_factor() {
