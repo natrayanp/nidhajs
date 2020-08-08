@@ -50,6 +50,7 @@ export class Connectors {
   public bezierWeight: number;
   public pathid: number;
   remove_end_dot: boolean;
+  
 
   constructor (start_obj: LeafShape, end_obj = <LeafShape>{}) {
     this.start_obj = start_obj;
@@ -372,7 +373,16 @@ export class TextLeaf {
           this.row_textbox = [];
           this.text_align = "middle";
           this.rootshape = rootsh;
-          this.rootshape.text_array = rootsh.data.data.leaf_d_txt;
+          console.log("rootsh");
+          console.log(rootsh);          
+          console.log(rootsh.data);
+          console.log(rootsh.data.data != undefined);
+          if (rootsh.data.data != undefined) {
+            this.rootshape.text_array = rootsh.data.data.leaf_d_txt;
+          } else {
+            this.rootshape.text_array = [];
+          }
+          
           this.col_width = [];
           this.row_height = [];
           this.max_col_width = []; 
@@ -975,12 +985,14 @@ export abstract class LeafShape {
     public stroke: string;
     public stroke_width: number;
     public data: any;
+    //public shapeconf: any;
+    public ismould: boolean;
     public click_event_code: string;
     
     
     
 
-    constructor(x:number,y:number, prntshape:any, groupid: string, ta: any[], chartobj = {}, d: any = {}) {
+    constructor(x:number,y:number, prntshape:any, groupid: string, ta: any[], chartobj = {}, d: any = {}, sconf: any = {}) {
       this.x = 0;
       this.y = 0;
       this.iammoving = false;
@@ -1014,6 +1026,21 @@ export abstract class LeafShape {
       this.working_on_con = <Connectors>{};
       // Connector related properties
       this.data = d;
+      //this.shapeconf = sconf;
+      this.ismould = false;          
+      if(this.data.hasOwnProperty("data") ) {
+        console.log(this.data.data);
+        console.log(this.data.data.hasOwnProperty('shapeconf'));  
+        if (this.data.data.hasOwnProperty('shapeconf')){
+          console.log(this.data.data.shapeconf.hasOwnProperty('shptype'));
+          if (this.data.data.shapeconf.hasOwnProperty('shptype')){
+            console.log(this.data.data.shapeconf.shptype);
+            if (this.data.data.shapeconf.shptype === "mould") {
+              this.ismould = true;
+            }
+          }      
+        }
+      }
       //Click event
       this.click_event_code = "";
 
@@ -1120,7 +1147,12 @@ export abstract class LeafShape {
         //"g#leaf_Eve"
             console.log("movingend");
             console.log(this);
-        this.myroot[0].chart_obj.push_leaf("draw_area",this);
+        if (this.ismould) {
+          this.myroot[0].chart_obj.push_leaf("sidemenu_area",this);
+        } else {
+          this.myroot[0].chart_obj.push_leaf("draw_area",this);
+        }
+        
         //this.myroot[0].chart_obj.
         this.myroot[0].chart_obj.moving_leaf= <LeafShape>{};
 
@@ -1263,6 +1295,7 @@ export abstract class LeafShape {
     }
 
     add_connector_function(con_start_obj: LeafShape,classname: string,funs:any[]) {
+      
       let xe = this.add_drag_forbase();
       this.con_start_obj=con_start_obj;
 
@@ -1458,7 +1491,7 @@ export class base_rect_leaf_w_text extends LeafShape {
 
   width: number;
   height: number;
-  mytext: any;
+  mytext: any;  
 
 
   constructor(x:number,y:number, prntshape:any, groupid:string, w: number,h: number) {
@@ -1470,9 +1503,10 @@ export class base_rect_leaf_w_text extends LeafShape {
   }
 
   create() {
-    //console.log("tttttt");
-//console.log(this.groupid);
+    console.log("tttttt");
+console.log(this.groupid);
 //console.log(d3.select("#leaf_Eve"));
+  console.log(d3.select("g#sleaf_pandas_read_csv"));
     //console.log("tttttt");
       this.mybaseleaf = d3.select(this.groupid)
                       .append("rect")
@@ -1515,11 +1549,8 @@ export class base_rect_leaf_w_text extends LeafShape {
   }
 
   moving_bare() {
-    console.log("ii moving bare text leaf");
-    console.log(this);
-    console.log(this.mytext);
-    console.log(typeof(this.mytext));
-    console.log(this.mytext != undefined);
+    //console.log("ii moving bare text leaf");
+    //console.log(this);
     this.mybaseleaf.attr("x", this.get_x())
                .attr("y", this.get_y());
     

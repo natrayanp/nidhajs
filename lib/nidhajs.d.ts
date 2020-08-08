@@ -85,8 +85,9 @@ export declare abstract class LeafShape {
     stroke: string;
     stroke_width: number;
     data: any;
+    ismould: boolean;
     click_event_code: string;
-    constructor(x: number, y: number, prntshape: any, groupid: string, ta: any[], chartobj?: {}, d?: any);
+    constructor(x: number, y: number, prntshape: any, groupid: string, ta: any[], chartobj?: {}, d?: any, sconf?: any);
     abstract create(): void;
     abstract size_calc(): void;
     movingstart(): void;
